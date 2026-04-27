@@ -3,28 +3,50 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main   # or your branch
+      - main   # change if your branch is different
 
 permissions:
   contents: read
   pages: write
-  id-token: write   # ✅ THIS LINE FIXES YOUR ERROR
+  id-token: write   # ✅ required for deploy-pages
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      # 1. Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Setup Node (for JS projects)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Build project (creates dist/build/out)
+      - name: Build project
+        run: npm run build
+
+      # 5. Debug (VERY IMPORTANT 🔍)
+      - name: Check build files
+        run: ls -la
+
+      # 6. Setup GitHub Pages
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      # 7. Upload artifact
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist   # or your build folder
+          path: ./dist   # 🔥 CHANGE THIS if needed
 
+      # 8. Deploy
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
