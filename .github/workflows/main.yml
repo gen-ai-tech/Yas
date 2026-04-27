@@ -1,52 +1,29 @@
-name: Deploy to GitHub Pages
+name: Deploy Static Site
 
 on:
   push:
-    branches:
-      - main   # change if your branch is different
+    branches: [main]
 
 permissions:
   contents: read
   pages: write
-  id-token: write   # ✅ required for deploy-pages
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout code
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Setup Node (for JS projects)
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      # 3. Install dependencies
-      - name: Install dependencies
-        run: npm install
-
-      # 4. Build project (creates dist/build/out)
-      - name: Build project
-        run: npm run build
-
-      # 5. Debug (VERY IMPORTANT 🔍)
-      - name: Check build files
-        run: ls -la
-
-      # 6. Setup GitHub Pages
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      # 7. Upload artifact
-      - name: Upload artifact
+      - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist   # 🔥 CHANGE THIS if needed
+          path: ./   # ✅ whole project
 
-      # 8. Deploy
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: actions/deploy-pages@v4
